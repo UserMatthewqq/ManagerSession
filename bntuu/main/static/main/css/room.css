@@ -1,0 +1,58 @@
+aside {
+    float: left;
+    background: #2c2c2c;
+    width: 18%;
+    padding: 4.1%;
+    padding-top: 6.4%;
+    height: 100vh;
+    color: #000;
+    border-right: 5px solid #4d4d4d;
+}
+
+aside a {
+    color: white;
+    display: block;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+aside li:hover {
+    transform: scale(1.1);
+}
+
+aside li {
+    margin-bottom: 1em;
+    transition: .5s;
+}
+
+#main {
+    width: 82%;
+    padding: 2.5%;
+    padding-top: 5%;
+    height: 100vh;
+    background: #1f1e1e;
+    float: right;
+    color: #fff;
+    text-align: center;
+    font-size: 25px;
+    padding-top: 18%;
+}
+
+h2 {
+    margin-bottom: 1.5%;
+}
+
+#roomidt {
+  position: fixed;
+  top: 68px;
+  left: 1465px;
+  color: #fff;
+}
+
+#roomid {
+  position: fixed;
+  top: 69px;
+  left: 1515px;
+  color: #fff;
+
+}

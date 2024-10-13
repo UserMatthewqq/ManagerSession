@@ -1,0 +1,30 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BNTU_Rooms</title>
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+<body>
+    <header>
+
+        <a class="logo">BNTU_Rooms</a>
+
+        <nav>
+            <ul>
+                <li><a href="{% url 'logout' %}">Log out</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="centered-buttons">
+        <button class="centered-button" onclick="window.location.href = '/create_room';">Create room</button>
+        <button class="centered-button" onclick="window.location.href = '/enter_room';">Enter room</button>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BNTU_Rooms</title>
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/gpt.css' %}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<main>
+    <h1>GPT</h1>
+    <textarea id="send_text" placeholder="Введите запрос..." autofocus></textarea>
+    <textarea readonly id="get_text" placeholder="Результат запроса будет здесь."></textarea>
+    <input type="submit" id="InputBtn" class="btn" value="Input">
+</main>
+
+<script>
+        $(document).ready(function(){
+            // Forming csrf_token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    let cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            };
+
+
+            let data = {}
+
+            $('.btn').on('click', function(e){
+                $("#get_text").val("");
+                $("#get_text").attr("placeholder", "Загрузка...");
+                data['action'] = 'NeedGpt';
+                data['req'] = $("#send_text").val();
+                data['csrfmiddlewaretoken'] = getCookie('csrftoken');
+                SendAjax();
+            });
+
+            $("#send_text").click(function() {
+                $(this).val("");
+            });
+
+            function SendAjax(){
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/myaction/',
+                    method: 'POST',
+                    data: data,
+                    cached: true,
+                    success: function(data){
+                        console.log(data);
+                        $("#get_text").val(data.result);
+                    },
+                    error: function(e){
+                        console.log(e);
+                    }
+                })
+            }
+        })
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'git/css/style.css' %}">
+    <script src="{% static 'git/js/script.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>GIT</title>
+</head>
+<body>
+
+<!--    <input ondrag="return false" type="file" id="imageInput2" accept="image/*" onchange="displayImage(this)"/>-->
+    <h1>GIT</h1>
+    <button class="createFile" onclick="document.getElementById('imageInput').click()">Load file</button>
+    <input type="file" id="imageInput" onchange="SendFile(this)"/>
+    <h6 id="roomidt">room id:</h6>
+    <h6 id="roomid">{{ room_id }}</h6>
+
+    <div class="note_container">
+<!--        <div class="note">-->
+<!--            <p class="note_text">test.cpp</p>-->
+<!--            <p class="note_text_date">13:00ㅤ21.05.2024</p>-->
+<!--            <button class="but" id="load_but"></button>-->
+<!--            <button class="but" id="delete_but"></button>-->
+<!--        </div>-->
+    </div>
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Имя cookie совпадает с именем CSRF-токена, обычно 'csrftoken'
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+                }
+              }
+            }
+            return cookieValue;
+        }
+
+        $(document).ready(function() {
+            // AJAX-запрос к серверу для получения данных из базы данных
+            $.ajax({
+                url: '/load_files_url/',  // URL-адрес, по которому находится представление для получения данных
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var saveFObjects = response.save_files_objects;
+                    var room = document.getElementById("roomid");
+
+                    for (var i = saveFObjects.length - 1; i > -1; i--) {
+                        if (saveFObjects[i].room_id == room.textContent) {
+                            const room_id = document.getElementById('roomid').textContent;
+                            const note_container = document.getElementsByClassName('note_container')[0];
+
+                            const note = document.createElement('div');
+                            note.className = 'note';
+
+                            const note_text = document.createElement('p');
+                            note_text.className = 'note_text';
+                            note_text.textContent = saveFObjects[i].filee.substring(saveFObjects[i].filee.lastIndexOf('/') + 1);
+                            note.appendChild(note_text);
+
+                            const note_text_date = document.createElement('p');
+                            note_text_date.className = 'note_text_date';
+                            note_text_date.textContent = saveFObjects[i].time;
+                            note.appendChild(note_text_date);
+
+                            const load_but = document.createElement('button');
+                            load_but.className = 'but';
+                            load_but.id = 'load_but';
+                            load_but.addEventListener('click', function() {
+                                const fileUrl = 'media/files/' + get_text(this);
+
+                                // Создаем временную ссылку для загрузки
+                                const tempLink = document.createElement('a');
+                                tempLink.href = fileUrl;
+                                tempLink.setAttribute('download', get_text(this));
+
+                                // Добавляем ссылку в DOM и клинаем по ней
+                                document.body.appendChild(tempLink);
+                                tempLink.click();
+
+                                // Удаляем временную ссылку из DOM
+                                document.body.removeChild(tempLink);
+                            });
+                            note.appendChild(load_but);
+
+                            const delete_but = document.createElement('button');
+                            delete_but.className = 'but';
+                            delete_but.id = 'delete_but';
+                            delete_but.addEventListener('click', function() {
+                                $.ajaxSetup({
+                                  beforeSend: function(xhr, settings) {
+                                    if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                                      xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                    }
+                                  }
+                                });
+
+                                $.ajax({
+                                  url: '/delete_file/',  // Замените на свой URL-адрес
+                                  type: 'POST',
+                                  data: {
+                                    // Передаем параметры, необходимые для удаления элемента
+                                    room_id: parseInt(room_id),
+                                    file: get_text(this)
+                                  },
+                                  success: function(response) {
+                                    // Обработка успешного ответа от сервера
+                                    console.log('Элемент успешно удален!');
+                                  },
+                                  error: function(xhr, errmsg, err) {
+                                    // Обработка ошибки
+                                    console.log('Ошибка удаления элемента!');
+                                  }
+                                });
+
+                                del_file(this);
+                            });
+                            note.appendChild(delete_but);
+
+                            note_container.appendChild(note);
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

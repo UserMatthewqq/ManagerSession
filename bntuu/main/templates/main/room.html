@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BNTU_Rooms</title>
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/room.css' %}">
+<body>
+    <header>
+        <a class="logo">BNTU_Rooms</a>
+        <nav>
+            <ul>
+                <li><a href="/after_reg">Quit</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <aside>
+        <ul>
+            <li><a href="/git?room={{ room_id }}">Git</a></li>
+            <li><a href="/video">VideoConf</a></li>
+            <li><a href="/board?room={{ room_id }}" id="board_link">Board</a></li>
+            <li><a href="/gpt">GPT</a></li>
+        </ul>
+    </aside>
+
+    <div id="main">
+        <h2>Привет👋</h2>
+        <h4>BNTU_Rooms - удобное рабочее пространство для работы в команде.</h4>
+    </div>
+
+    <h6 id="roomidt">room id:</h6>
+    <h6 id="roomid" name="some_data">{{ room_id }}</h6>
+</body>
+</html>

@@ -1,0 +1,71 @@
+main {
+    width: 100%;
+    padding: 2.5%;
+    padding-top: 5%;
+    height: 100vh;
+    background: #1f1e1e;
+    float: right;
+    color: #fff;
+}
+
+main h1 {
+
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+main textarea {
+    display: inline;
+    width: 40%;
+    height: 300px;
+    padding: 0.375rem 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #1f1e1e;
+    background-clip: padding-box;
+    border: 1px solid #fff;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    margin-left: 96px;
+    resize: none;
+}
+
+textarea::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+textarea::-webkit-scrollbar-track-piece {
+    background:transparent;
+    -webkit-border-radius: 60px;
+}
+textarea::-webkit-scrollbar-thumb:vertical {
+    height: 5px;
+    background-color: #cccccc;
+}
+
+main .btn {
+    margin: 0 auto;
+    display: block;
+    margin-top: 40px;
+    width: 120px;
+    height: 40px;
+    background: #fff;
+    color: #000;
+    border: 0;
+    border-radius: 5px;
+    font-size: 16px;
+    justify-content: center;
+}
+
+main .btn:hover {
+    background: #e0e0e0;
+    color: #000;
+}
+
+main .btn:active {
+    transform: scale(0.98);
+    filter: brightness(90%);
+}

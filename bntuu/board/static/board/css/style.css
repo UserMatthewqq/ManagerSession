@@ -1,0 +1,157 @@
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: url('../image/backimg8.svg');
+  background-repeat: repeat;
+}
+
+#ball {
+  cursor: pointer;
+  opacity: 0;
+  z-index: 1;
+  margin: 0;
+}
+
+img#ball {
+  height: 200px;
+  width: auto;
+}
+
+p#ball {
+  width: 200px;
+  height: auto;
+}
+
+#imageInput {
+  top: 0;
+  left: 0;
+  width: 95vw;
+  height: 95vh;
+  opacity: 0;
+}
+
+#menu {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  flex-direction: column;
+}
+
+textarea {
+  resize: none;
+  overflow: auto;
+  padding:10px;
+  margin:10px 0;
+  border:0;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  outline: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 200px;
+}
+
+#createep {
+  border: none;
+  border-radius: 5px;
+  height: 30px;
+  background-color: #252f78;
+  color: white;
+}
+
+#createep:hover {
+  background-color: #1d255e;
+}
+
+.ptext {
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: break-spaces;
+  background-color: whitesmoke;
+  padding:10px;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  border-radius: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: #aecce6;
+}
+
+#roomidt {
+  position: fixed;
+  top: -18px;
+  left: 1469px;
+}
+
+#roomid {
+  position: fixed;
+  top: -17px;
+  left: 1515px;
+}
+
+#leftmenu {
+  width: auto;
+  height: 225px;
+  border-radius: 10px;
+  background-color: #c7c7c7;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  position: fixed;
+  top: 230px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 7px;
+  z-index: 2;
+}
+
+
+
+.createText {
+  z-index: 2;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  color: #bababa;
+  margin-bottom: 8px;
+}
+
+.createText:hover {
+    filter: brightness(95%);
+}
+
+.createText:active {
+    transform: scale(0.98);
+    filter: brightness(90%);
+}
+
+#leftmenu img {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#imageInput2 {
+  display: none;
+}
+
+#save_but {
+  background: url('../image/load.png') no-repeat center;
+  background-size: 33px 33px;
+  background-color: #f1f1f1;
+}
+
+#del_but {
+  background: url('../image/trash.png') no-repeat center;
+  background-size: 33px 33px;
+  background-color: #f1f1f1;
+}
+
+.clickedball {
+  border: 1px solid black;
+}

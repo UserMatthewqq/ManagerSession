@@ -1,0 +1,121 @@
+body {
+    background: #1f1e1e;
+    color: #fff;
+    font-family: sans-serif;
+}
+
+#roomidt {
+  position: fixed;
+  top: -18px;
+  left: 1464px;
+}
+
+#roomid {
+  position: fixed;
+  top: -17px;
+  left: 1510px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 45px;
+    margin-top: 40px;
+}
+
+.createFile {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 60px;
+    width: 10%;
+    height: 50px;
+    background-color: #ccc;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 550;
+}
+
+.createFile:hover {
+    filter: brightness(95%);
+}
+
+.createFile:active {
+    transform: scale(0.98);
+    filter: brightness(90%);
+}
+
+input {
+    display: none;
+}
+
+.note_container {
+    width: 30%;
+    height: auto;
+
+    margin: 0 auto;
+    margin-bottom: 45px;
+
+}
+
+.note {
+    height: 100px;
+    background-color: #474747;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.note_text {
+    position: absolute;
+    margin-left: 25px;
+    margin-top: 37px;
+    font-size: 23px;
+    color: #bababa;
+}
+
+.note_text_date {
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 7px;
+    font-size: 12px;
+    color: #707070;
+}
+
+.but {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    color: #bababa;
+    cursor: pointer;
+}
+
+.but:hover {
+    filter: brightness(95%);
+}
+
+.but:active {
+    transform: scale(0.98);
+    filter: brightness(90%);
+}
+
+#load_but {
+    background: url('../image/load.png') no-repeat center;
+    background-size: 33px 33px;
+    background-color: #bababa;
+    margin-left: 305px;
+    margin-top: 25px;
+}
+
+#delete_but {
+    background: url('../image/trash.png') no-repeat center;
+    background-size: 33px 33px;
+    background-color: #bababa;
+    margin-left: 15px;
+}
+
+a {
+    display: none;
+}

@@ -1,0 +1,419 @@
+{% load static %}
+
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>BNTU_Rooms</title>
+  <link rel="stylesheet" href="{% static 'board/css/style.css' %}">
+  <script src="{% static 'board/js/script.js' %}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+
+  <div id="imageContainer"></div>
+
+  <div id="menu">
+    <textarea id="textInput" placeholder="Введите текст"></textarea>
+    <button id="createep" onclick="create()">Создать</button>
+  </div>
+
+  <input onclick="return false" type="file" id="imageInput" accept="image/*" onchange="displayImage(this)"/>
+
+  <h6 id="roomidt">room id:</h6>
+  <h6 id="roomid">{{ room_id }}</h6>
+
+  <div id="leftmenu">
+    <button class="createText" onclick="showMenu()">
+      <img src="{% static 'board/image/textbut.png' %}">
+    </button>
+
+
+    <input ondrag="return false" type="file" id="imageInput2" accept="image/*" onchange="displayImage(this)"/>
+    <button class="createText" onclick="document.getElementById('imageInput2').click()">
+      <img src="{% static 'board/image/imgbut.png' %}">
+    </button>
+
+    <input id="del_but" class="createText" type="submit" value="">
+
+    <input id="save_but" class="createText" type="submit" value="">
+<!--      <img src="{% static 'board/image/load.png' %}">-->
+  </div>
+
+<script>
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Имя cookie совпадает с именем CSRF-токена, обычно 'csrftoken'
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  $(document).ready(function() {
+    $('#save_but').click(function() {
+
+      $.ajax({
+                url: '/load_data/',  // URL-адрес, по которому находится представление для получения данных
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var mas_p = response.save_p_objects;
+
+                    $('p').each(function(index, element) {
+                      var room_id = $("#roomid").text();
+                      var left = $(element).css('left');
+                      var top = $(element).css('top');
+                      var coordinates = left + ', ' + top;
+                      var text = $(element).text();
+
+                      var filter = 0;
+
+                      for(var i = 0; i < mas_p.length; i++) {
+                        if(mas_p[i].room_id == room_id && mas_p[i].coordinates == coordinates && mas_p[i].text == text) {
+                          filter += 1;
+                        }
+                      }
+
+                      if (filter == 0) {
+                        // Получение CSRF-токена
+                        var csrftoken = getCookie('csrftoken');
+
+                        // Добавление CSRF-токена в заголовок запроса
+                        $.ajaxSetup({
+                          beforeSend: function(xhr, settings) {
+                            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                              xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                            }
+                          }
+                        });
+
+                        // Отправка POST-запроса
+                        $.post('/save_data/', {
+                          'room_id': room_id,
+                          'coordinates': coordinates,
+                          'text': text
+                        }, function(response) {
+                          if (response.success) {
+                            console.log('Данные успешно сохранены');
+                          } else {
+                            console.log('Произошла ошибка при сохранении данных');
+                          }
+                        });
+                      }
+                    });
+                }
+      });
+
+      $('img').each(function(index, element) {
+        if ($(element).attr('id') === 'ball') {
+          var room_id = $("#roomid").text();
+          var left = $(element).css('left');
+          var top = $(element).css('top');
+          var coordinates = left + ', ' + top;
+          var src = $(element).attr('src');
+
+
+          var csrftoken = getCookie('csrftoken');
+
+          // Добавление CSRF-токена в заголовок запроса
+          $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+              xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            }
+          }
+        });
+
+        // Отправка POST-запроса
+        $.post('/save_coord_img/', {
+          'room_id': room_id,
+          'coordinates': coordinates,
+          'src': src
+        }, function(response) {
+          if (response.success) {
+            console.log('Данные успешно сохранены');
+          } else {
+            console.log('Произошла ошибка при сохранении данных');
+          }
+        });
+        }
+      });
+    });
+  });
+
+  $(document).ready(function() {
+            // AJAX-запрос к серверу для получения данных из базы данных
+            $.ajax({
+                url: '/load_data/',  // URL-адрес, по которому находится представление для получения данных
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var savePObjects = response.save_p_objects;
+                    var room = document.getElementById("roomid");
+
+                    for (var i = 0; i < savePObjects.length; i++) {
+
+                        if (savePObjects[i].room_id == room.textContent) {
+                            const imageContainer = document.getElementById('imageContainer');
+                            const pElement = document.createElement('p');
+                            pElement.id = 'ball';
+                            pElement.className = 'ptext'
+                            pElement.textContent = savePObjects[i].text;
+
+                            var coord = savePObjects[i].coordinates.split(', ');
+
+                            pElement.style.opacity = 1;
+                            pElement.style.left = coord[0];
+                            pElement.style.top = coord[1];
+                            pElement.style.position = 'absolute';
+                            pElement.style.zIndex = 1;
+                            document.body.append(pElement);
+
+                            pElement.addEventListener('mousedown', onMouseDown);
+                            pElement.addEventListener('dragstart', onDragStart);
+
+                            function onMouseDown(event) {
+                              this.classList.toggle('clickedball');
+
+                              let shiftX = event.clientX - pElement.getBoundingClientRect().left;
+                              let shiftY = event.clientY - pElement.getBoundingClientRect().top;
+
+                              pElement.style.position = 'absolute';
+                              pElement.style.zIndex = 1;
+
+                              document.body.append(pElement);
+
+                              moveAt(event.pageX, event.pageY);
+
+                              function moveAt(pageX, pageY) {
+                                pElement.style.left = pageX - shiftX + 'px';
+                                pElement.style.top = pageY - shiftY + 'px';
+                              }
+
+                              function onMouseMove(event) {
+                                moveAt(event.pageX, event.pageY);
+                              }
+
+                              document.addEventListener('mousemove', onMouseMove);
+
+                              pElement.onmouseup = function () {
+                                document.removeEventListener('mousemove', onMouseMove);
+                                pElement.onmouseup = null;
+                              };
+                            }
+
+                            function onDragStart(event) {
+                              event.preventDefault();
+                            }
+                        }
+
+                    }
+                }
+            });
+
+
+            $.ajax({
+                url: '/load_img/',  // URL-адрес, по которому находится представление для получения данных
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var saveImgObjects = response.saveimagemodel_objects;
+                    var room = document.getElementById("roomid");
+
+                    for (var i = 0; i < saveImgObjects.length; i++) {
+
+                        if (saveImgObjects[i].room_id == room.textContent) {
+                            const imageContainer = document.getElementById('imageContainer');
+                            const imgElement = document.createElement('img');
+                            imgElement.id = 'ball';
+
+                            var coord = saveImgObjects[i].coordinates.split(', ');
+                            var way = 'media/';
+
+                            imgElement.src = way + saveImgObjects[i].image;
+                            imgElement.alt = 'Превью изображения';
+                            imageContainer.appendChild(imgElement);
+                            imgElement.style.opacity = 1;
+                            imgElement.style.left = coord[0];
+                            imgElement.style.top = coord[1];
+                            imgElement.style.position = 'absolute';
+                            imgElement.style.zIndex = 1;
+                            document.body.append(imgElement);
+
+                            imgElement.addEventListener('mousedown', onMouseDown);
+                            imgElement.addEventListener('dragstart', onDragStart);
+
+                            function onMouseDown(event) {
+                              this.classList.toggle('clickedball');
+
+                              let shiftX = event.clientX - imgElement.getBoundingClientRect().left;
+                              let shiftY = event.clientY - imgElement.getBoundingClientRect().top;
+
+                              imgElement.style.position = 'absolute';
+                              imgElement.style.zIndex = 1;
+
+                              document.body.append(imgElement);
+
+                              moveAt(event.pageX, event.pageY);
+
+                              function moveAt(pageX, pageY) {
+                                imgElement.style.left = pageX - shiftX + 'px';
+                                imgElement.style.top = pageY - shiftY + 'px';
+                              }
+
+                              function onMouseMove(event) {
+                                moveAt(event.pageX, event.pageY);
+                              }
+
+                              document.addEventListener('mousemove', onMouseMove);
+
+                              imgElement.onmouseup = function () {
+                                document.removeEventListener('mousemove', onMouseMove);
+                                imgElement.onmouseup = null;
+                              };
+                            }
+
+                            function onDragStart(event) {
+                              event.preventDefault();
+                            }
+                        }
+                    }
+                }
+            });
+  });
+
+
+  $(document).ready(function() {
+    $('#del_but').click(function() {
+      var request1 = $.ajax({
+                url: '/load_img/',  // URL-адрес, по которому находится представление для получения данных
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var saveImgObjects = response.saveimagemodel_objects;
+
+                    $('img').each(function(index, element) {
+                      if ($(element).attr('class') === 'clickedball') {
+<!--                    $('.clickedball').each(function(index, element) {-->
+                        element.remove();
+
+                        var room_id = $("#roomid").text();
+                        var src = $(element).attr('src');
+
+                        var filter = 0;
+
+                        for(var i = 0; i < saveImgObjects.length; i++) {
+                          if(saveImgObjects[i].room_id == room_id && saveImgObjects[i].image == src.slice(6)) {
+                            var csrftoken = getCookie('csrftoken');
+
+                            // Добавление CSRF-токена в заголовок запроса
+                            $.ajaxSetup({
+                              beforeSend: function(xhr, settings) {
+                                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                                  xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                }
+                              }
+                            });
+
+                            $.ajax({
+                              url: '/delete_img/',  // Замените на свой URL-адрес
+                              type: 'POST',
+                              data: {
+                                // Передаем параметры, необходимые для удаления элемента
+                                room_id: parseInt(room_id),
+                                src: src.slice(6)
+                              },
+                              success: function(response) {
+                                // Обработка успешного ответа от сервера
+                                console.log('Элемент успешно удален!');
+                              },
+                              error: function(xhr, errmsg, err) {
+                                // Обработка ошибки
+                                console.log('Ошибка удаления элемента!');
+                              }
+                            });
+                          }
+                        }
+                      }
+                    });
+                }
+      });
+
+
+      var request2 = $.ajax({
+                url: '/load_data/',  // URL-адрес, по которому находится представление для получения данных
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var mas_p = response.save_p_objects;
+
+                    $('p').each(function(index, element) {
+                      if ($(element).attr('class') === 'ptext clickedball') {
+<!--                    $('.clickedball').each(function(index, element) {-->
+                        element.remove();
+
+                        var room_id = $("#roomid").text();
+                        var text = $(element).text();
+
+                        var filter = 0;
+
+                        for(var i = 0; i < mas_p.length; i++) {
+                          if(mas_p[i].room_id == room_id && mas_p[i].text == text) {
+                            var csrftoken = getCookie('csrftoken');
+
+                            // Добавление CSRF-токена в заголовок запроса
+                            $.ajaxSetup({
+                              beforeSend: function(xhr, settings) {
+                                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                                  xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                }
+                              }
+                            });
+
+                            $.ajax({
+                              url: '/delete_item/',  // Замените на свой URL-адрес
+                              type: 'POST',
+                              data: {
+                                // Передаем параметры, необходимые для удаления элемента
+                                room_id: parseInt(room_id),
+                                text: text
+                              },
+                              success: function(response) {
+                                // Обработка успешного ответа от сервера
+                                console.log('Элемент успешно удален');
+                              },
+                              error: function(xhr, errmsg, err) {
+                                // Обработка ошибки
+                                console.log('Ошибка удаления элемента');
+                              }
+                            });
+                          }
+                        }
+                      }
+                    });
+                }
+      });
+
+      $.when(request1, request2).done(function(response1, response2) {
+          // Этот код выполнится после того, как оба запроса завершатся успешно
+          console.log('Оба запроса выполнены успешно');
+      }).fail(function() {
+          // Этот код выполнится, если хотя бы один из запросов завершится ошибкой
+          console.log('Ошибки в выполнении одного из запросов');
+      });
+
+    });
+  });
+</script>
+</body>
+</html>
